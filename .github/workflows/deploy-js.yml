@@ -21,7 +21,7 @@ jobs:
       - name: Download latest JS release from KMP repo
         uses: robinraju/release-downloader@v1
         with:
-          repository: blazern/langample
+          repository: blazern/lexisoup
           latest: true
           fileName: js-dist.zip
           out-file-path: ./js-dist
