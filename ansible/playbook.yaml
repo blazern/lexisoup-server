@@ -8,8 +8,6 @@
         that:
           - domain_name is defined
           - certbot_email is defined
-          - panlex_db_url is defined
-          - panlex_sqlite_db_path is defined
         fail_msg: "You must provide all required variables"
 
     - name: Update apt cache and upgrade
@@ -24,22 +22,9 @@
           - nginx
           - snapd
           - python3
+          - python3-venv
           - ca-certificates
         state: present
-
-    - name: Ensure PanLex DB directory exists
-      file:
-        path: "{{ panlex_sqlite_db_path | dirname }}"
-        state: directory
-        mode: '0755'
-
-    - name: Download PanLex DB if missing
-      get_url:
-        url: "{{ panlex_db_url }}"
-        dest: "{{ panlex_sqlite_db_path }}"
-        mode: '0644'
-        force: false
-        timeout: 3600 # big file, 1 hour
 
     - name: Create directory for Docker keyrings
       file:
@@ -157,9 +142,7 @@
 
     - name: Test nginx configuration
       command: nginx -t
-      register: nginx_test
       changed_when: false
-      failed_when: nginx_test.rc != 0
 
     - name: Obtain/renew certificate with certbot (nginx plugin)
       command: >
