@@ -49,6 +49,4 @@ jobs:
         run: |
           ansible-playbook -i inventory.ini playbook.yaml \
             -e "domain_name=${{ secrets.SERVER_HOSTNAME }}" \
-            -e "certbot_email=${{ secrets.CERTBOT_EMAIL }}" \
-            -e "panlex_db_url=${{vars.PANLEX_DB_URL}}" \
-            -e "panlex_sqlite_db_path=${{vars.PANLEX_SQLITE_DB_PATH}}"
+            -e "certbot_email=${{ secrets.CERTBOT_EMAIL }}"

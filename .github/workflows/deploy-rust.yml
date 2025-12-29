@@ -26,13 +26,13 @@ jobs:
           out-file-path: ./backend/target/release
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload backend binary and deploy script
+      - name: Upload backend deploy files
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_SSH_IP }}
           username: ${{ secrets.SERVER_SSH_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: ./backend/target/release/backend,./cicd/deploy.py
+          source: ./backend/target/release/backend,./scripts/deploy_backend.py,./scripts/requirements.txt
           target: /tmp/
 
       - name: Remote deploy
@@ -43,9 +43,15 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             set -euo pipefail
-            python3 /tmp/cicd/deploy.py \
+
+            python3 -m venv "$HOME/langample-venv"
+            source "$HOME/langample-venv/bin/activate"
+            python -m pip install -r /tmp/scripts/requirements.txt
+
+            python3 /tmp/scripts/deploy_backend.py \
               --binary-path /tmp/backend/target/release/backend \
               --repo-url https://github.com/${{ github.repository }} \
               --api-key-chatgpt ${{ secrets.API_KEY_CHATGPT }} \
               --graphql-parent-path /langample/ \
+              --panlex-sqlite-db-url ${{vars.PANLEX_DB_URL}} \
               --panlex-sqlite-db-path ${{vars.PANLEX_SQLITE_DB_PATH}}

@@ -20,16 +20,16 @@ The Rust source code itself lives in the `backend/` directory (not documented he
    - SSH-es into the VPS using configured secrets.
    - Runs `ansible/playbook.yaml` to:
      - Install Docker, nginx, certbot, and base packages.
-     - Download the PanLex SQLite DB.
      - Configure nginx as a reverse proxy with TLS via Let’s Encrypt.
      - Expose the backend under `https://<your-domain>/api/…`.
-4. Workflow **`deploy-release`**:
+4. Workflow **`deploy-rust`**:
    - Downloads the latest `backend` release asset.
-   - Uploads the binary and `cicd/deploy.py` to the VPS.
+   - Uploads the binary and `scripts/deploy_backend.py` to the VPS.
    - Runs `deploy.py` via SSH, which:
      - Fresh-clones the repo on the server.
      - Copies the backend binary into `docker/langample/` as `backend-bin`.
      - Writes a `.env` file with runtime settings (ChatGPT API key, PanLex path, GraphQL parent path).
+     - Download and migrates the PanLex SQLite DB.
      - Runs `docker compose up -d` in `docker/`.
      - Waits until all containers are healthy.
 

@@ -1,5 +1,6 @@
 use crate::model::LexicalItemDetail;
-use crate::panlex::sqlite::{get_synonyms, get_translations};
+use crate::panlex::sqlite::synonyms::get_synonyms;
+use crate::panlex::sqlite::translations::get_translations;
 use axum::http::StatusCode;
 use sqlx::SqlitePool;
 
