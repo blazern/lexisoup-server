@@ -1,27 +1,29 @@
 mod app_state;
 mod graphql;
+mod kaikki;
 mod llm;
 mod model;
 mod panlex;
-mod util;
-mod kaikki;
 mod tatoeba;
+mod util;
 mod wortschatz_leipzig;
 
 use app_state::AppState;
+use std::str::FromStr;
 
 use async_graphql::http::GraphiQLSource;
 use async_graphql_axum::GraphQL;
-use axum::{response::Html, routing::get, Router};
+use axum::{Router, response::Html, routing::get};
 use clap::Parser;
-use graphql::schema::{build_schema, AppSchema};
+use graphql::schema::{AppSchema, build_schema};
 use sqlx::SqlitePool;
+use sqlx::sqlite::SqliteConnectOptions;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::{
     DefaultMakeSpan, DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer,
 };
 use tracing::Level;
-use tracing_subscriber::{fmt, EnvFilter};
+use tracing_subscriber::{EnvFilter, fmt};
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -31,6 +33,8 @@ struct Args {
     api_key_chat_gpt: String,
     #[arg(long = "panlex-sqlite-db-path", required = true)]
     panlex_sqlite_db_path: String,
+    #[arg(long = "sqlite-spellfix-prebuilt-path", required = true)]
+    sqlite_spellfix_prebuilt_path: String,
     #[arg(long = "port", default_value = "8080")]
     port: String,
     #[arg(long = "cors-permissive", default_value_t = false)]
@@ -61,7 +65,10 @@ fn init_tracing() {
 async fn main() {
     init_tracing();
     let args = Args::parse();
-    let panlex_sqlite_pool = SqlitePool::connect(&args.panlex_sqlite_db_path)
+    let panlex_sqlite_options = SqliteConnectOptions::from_str(&args.panlex_sqlite_db_path)
+        .expect("Invalid panlex sqlite db path")
+        .extension(args.sqlite_spellfix_prebuilt_path);
+    let panlex_sqlite_pool = SqlitePool::connect_with(panlex_sqlite_options)
         .await
         .expect("Can't connect to the PanLex DB");
     let app_state = AppState::new(args.api_key_chat_gpt, panlex_sqlite_pool)
@@ -93,6 +100,8 @@ async fn main() {
         app
     };
 
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", args.port)).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", args.port))
+        .await
+        .unwrap();
     axum::serve(listener, app).await.unwrap();
 }
