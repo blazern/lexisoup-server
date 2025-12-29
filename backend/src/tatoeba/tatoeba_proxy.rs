@@ -1,7 +1,7 @@
 use axum::{
     body::Body,
     extract::{Query, State},
-    http::{header, Response, StatusCode},
+    http::{Response, StatusCode, header},
 };
 use std::collections::HashMap;
 use tracing::error;
@@ -16,10 +16,7 @@ pub async fn tatoeba_proxy(
         Some(q) => {
             let trimmed = q.trim().to_string();
             if trimmed.is_empty() {
-                return Err((
-                    StatusCode::BAD_REQUEST,
-                    "query must not be empty".into(),
-                ));
+                return Err((StatusCode::BAD_REQUEST, "query must not be empty".into()));
             }
             *q = trimmed.clone();
             trimmed
@@ -37,10 +34,7 @@ pub async fn tatoeba_proxy(
         Ok(r) => r,
         Err(e) => {
             error!(error = %e, %url, %query, "network error talking to Tatoeba");
-            return Err((
-                StatusCode::BAD_GATEWAY,
-                "Tatoeba upstream error".into(),
-            ));
+            return Err((StatusCode::BAD_GATEWAY, "Tatoeba upstream error".into()));
         }
     };
 
@@ -51,10 +45,7 @@ pub async fn tatoeba_proxy(
         Ok(b) => b,
         Err(e) => {
             error!(error = %e, "failed to read Tatoeba response body");
-            return Err((
-                StatusCode::BAD_GATEWAY,
-                "Tatoeba upstream error".into(),
-            ));
+            return Err((StatusCode::BAD_GATEWAY, "Tatoeba upstream error".into()));
         }
     };
 

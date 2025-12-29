@@ -7,8 +7,10 @@ services:
         - API_KEY_CHATGPT=${API_KEY_CHATGPT:?ChatGPT API key must be set}
         - GRAPHQL_PARENT_PATH=${GRAPHQL_PARENT_PATH:?GraphQL parent path must be set}
         - PANLEX_SQLITE_DB_PATH=${PANLEX_SQLITE_DB_PATH:?Path to panlex.sqlite must be set}
+        - SQLITE_SPELLFIX_PREBUILT_PATH=${SQLITE_SPELLFIX_PREBUILT_PATH:?Path to the prebuilt spellfix1 must be set}
     restart: unless-stopped
     ports:
       - "8080:8080"
     volumes:
       - ${PANLEX_SQLITE_DB_PATH}:${PANLEX_SQLITE_DB_PATH}:ro
+      - ${SQLITE_SPELLFIX_PREBUILT_PATH}:${SQLITE_SPELLFIX_PREBUILT_PATH}:ro

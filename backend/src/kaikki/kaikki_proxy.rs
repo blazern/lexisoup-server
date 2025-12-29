@@ -1,7 +1,7 @@
 use axum::{
     body::Body,
     extract::{Query, State},
-    http::{header, Response, StatusCode},
+    http::{Response, StatusCode, header},
 };
 use serde::Deserialize;
 use tracing::error;
@@ -26,10 +26,7 @@ pub async fn kaikki_proxy(
     let sub = match subwiktionary_of(params.lang_iso3.trim()) {
         Some(s) => s,
         None => {
-            return Err((
-                StatusCode::BAD_REQUEST,
-                "unsupported lang".into(),
-            ));
+            return Err((StatusCode::BAD_REQUEST, "unsupported lang".into()));
         }
     };
 

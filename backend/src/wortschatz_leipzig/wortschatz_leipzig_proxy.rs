@@ -1,7 +1,7 @@
 use axum::{
     body::Body,
     extract::{Path, Query, State},
-    http::{header, Response, StatusCode},
+    http::{Response, StatusCode, header},
 };
 use serde::Deserialize;
 use tracing::error;
@@ -27,22 +27,14 @@ pub async fn wortschatz_leipzig_proxy(
     let term = term.trim();
 
     if corpus.is_empty() {
-        return Err((
-            StatusCode::BAD_REQUEST,
-            "corpus must not be empty".into(),
-        ));
+        return Err((StatusCode::BAD_REQUEST, "corpus must not be empty".into()));
     }
 
     if term.is_empty() {
-        return Err((
-            StatusCode::BAD_REQUEST,
-            "term must not be empty".into(),
-        ));
+        return Err((StatusCode::BAD_REQUEST, "term must not be empty".into()));
     }
 
-    let url = format!(
-        "https://api.wortschatz-leipzig.de/ws/sentences/{corpus}/sentences/{term}"
-    );
+    let url = format!("https://api.wortschatz-leipzig.de/ws/sentences/{corpus}/sentences/{term}");
 
     let mut req = state.http_client().get(&url);
 

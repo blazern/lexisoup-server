@@ -1,7 +1,7 @@
 use crate::app_state::AppState;
 use crate::llm::chatgpt_lexical_items;
-use crate::model::LexicalItemDetail;
-use crate::panlex::panlex_lexical_items;
+use crate::model::{LexicalItemDetail, Suggestion};
+use crate::panlex::{get_suggestions, panlex_lexical_items};
 use async_graphql::{Context, Error, ErrorExtensions, Object};
 
 pub struct Query;
@@ -59,6 +59,36 @@ impl Query {
                 e.set("message", msg);
             })
         })
+    }
+
+    async fn suggestions(
+        &self,
+        ctx: &Context<'_>,
+        query: String,
+        lang_from_iso3: String,
+        lang_to_iso3: String,
+    ) -> async_graphql::Result<Vec<Suggestion>> {
+        validate_params(&query, &lang_from_iso3, &lang_to_iso3)?;
+        let state = ctx.data::<AppState>()?;
+        get_suggestions(state.panlex_sqlite_pool(), &query, &lang_from_iso3)
+            .await
+            .map(|suggestions| {
+                suggestions
+                    .iter()
+                    .map(|suggestion| Suggestion {
+                        text: suggestion.text.clone(),
+                        lang_iso3: lang_from_iso3.to_string(),
+                        source: "panlex".to_string(),
+                    })
+                    .collect()
+            })
+            .map_err(|(status, msg)| {
+                Error::new("PanLex suggestions SQLite error").extend_with(|_, e| {
+                    e.set("code", "PANLEX_SQLITE_SUGGESTIONS");
+                    e.set("httpStatus", status.as_u16());
+                    e.set("message", msg);
+                })
+            })
     }
 }
 
