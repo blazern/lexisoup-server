@@ -1,4 +1,5 @@
 mod app_state;
+mod client_config;
 mod graphql;
 mod kaikki;
 mod llm;

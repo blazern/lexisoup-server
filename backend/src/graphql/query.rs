@@ -1,4 +1,5 @@
 use crate::app_state::AppState;
+use crate::client_config::ClientConfig;
 use crate::llm::chatgpt_lexical_items;
 use crate::model::{LexicalItemDetail, Suggestion};
 use crate::panlex::{get_suggestions, get_translations, panlex_lexical_items};
@@ -10,6 +11,10 @@ pub struct Query;
 
 #[Object]
 impl Query {
+    async fn config(&self) -> async_graphql::Result<ClientConfig> {
+        Ok(ClientConfig::default())
+    }
+
     async fn llm(
         &self,
         ctx: &Context<'_>,
