@@ -18,8 +18,9 @@ impl Default for ClientConfig {
             max_query_length: 50,
             translators_params: vec![TranslatorParams {
                 translator_id: "google_translate".to_string(),
-                min_query_length: 3,
-                max_query_length: 50,
+                text_length_min: 3,
+                text_length_max: 50,
+                batch_size_limit: 10,
             }],
         }
     }
