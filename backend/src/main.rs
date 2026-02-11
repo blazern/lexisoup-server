@@ -1,13 +1,9 @@
 mod app_state;
 mod client_config;
+mod data;
 mod graphql;
-mod kaikki;
-mod llm;
 mod model;
-mod panlex;
-mod tatoeba;
-mod util;
-mod wortschatz_leipzig;
+mod utils;
 
 use app_state::AppState;
 use std::str::FromStr;
@@ -16,6 +12,7 @@ use async_graphql::http::GraphiQLSource;
 use async_graphql_axum::GraphQL;
 use axum::{Router, response::Html, routing::get};
 use clap::Parser;
+use data::sources::{kaikki, tatoeba, wortschatz_leipzig};
 use graphql::schema::{AppSchema, build_schema};
 use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
@@ -32,6 +29,10 @@ struct Args {
     graphql_parent_path: String,
     #[arg(long = "api-key-chatgpt", required = true)]
     api_key_chat_gpt: String,
+    #[arg(long = "api-key-deepl", required = true)]
+    api_key_deepl: String,
+    #[arg(long = "endpoint-deepl", default_value = "https://api-free.deepl.com")]
+    endpoint_deepl: String,
     #[arg(long = "panlex-sqlite-db-path", required = true)]
     panlex_sqlite_db_path: String,
     #[arg(long = "sqlite-spellfix-prebuilt-path", required = true)]
@@ -72,8 +73,13 @@ async fn main() {
     let panlex_sqlite_pool = SqlitePool::connect_with(panlex_sqlite_options)
         .await
         .expect("Can't connect to the PanLex DB");
-    let app_state = AppState::new(args.api_key_chat_gpt, panlex_sqlite_pool)
-        .expect("Failed to create app state");
+    let app_state = AppState::new(
+        args.api_key_chat_gpt,
+        args.api_key_deepl,
+        args.endpoint_deepl,
+        panlex_sqlite_pool,
+    )
+    .expect("Failed to create app state");
     let schema: AppSchema = build_schema(app_state.clone());
 
     let graphql_parent_path = args.graphql_parent_path.clone();

@@ -3,7 +3,7 @@ use crate::model::{
     LexicalItemDetail, Sentence, TranslationsSet,
     lexical_item_detail::{Example, Explanation, Forms, Synonyms, WordTranslations},
 };
-use crate::util::truncate;
+use crate::utils::truncate;
 use axum::http::StatusCode;
 use reqwest::Client;
 use serde::Deserialize;
