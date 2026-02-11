@@ -47,6 +47,11 @@ def main() -> None:
         help="ChatGPT API key to insert into .env",
     )
     parser.add_argument(
+        "--api-key-deepl",
+        required=True,
+        help="DeepL API key to insert into .env",
+    )
+    parser.add_argument(
         "--graphql-parent-path",
         required=True,
         help="Parent path prefix for GraphQL endpoints (e.g. /langample/)",
@@ -71,6 +76,7 @@ def main() -> None:
 
     binary_src: Path = args.binary_path.resolve()
     api_key_chatgpt: str = args.api_key_chatgpt
+    api_key_deepl: str = args.api_key_deepl
     graphql_parent_path: str = args.graphql_parent_path
     panlex_sqlite_db_path: Path = Path(args.panlex_sqlite_db_path).expanduser().resolve()
     panlex_sqlite_db_url: str = args.panlex_sqlite_db_url
@@ -107,6 +113,7 @@ def main() -> None:
     env_file.write_text(
         f"HOST_PATH_BIN={bin_file_name}\n"
         f"API_KEY_CHATGPT={api_key_chatgpt}\n"
+        f"API_KEY_DEEPL={api_key_deepl}\n"
         f"GRAPHQL_PARENT_PATH={graphql_parent_path}\n"
         f"PANLEX_SQLITE_DB_PATH={panlex_sqlite_db_path}\n"
         f"SQLITE_SPELLFIX_PREBUILT_PATH={sqlite_spellfix_prebuilt_path}\n",

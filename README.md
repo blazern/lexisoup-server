@@ -28,7 +28,7 @@ The Rust source code itself lives in the `backend/` directory (not documented he
    - Runs `deploy.py` via SSH, which:
      - Fresh-clones the repo on the server.
      - Copies the backend binary into `docker/langample/` as `backend-bin`.
-     - Writes a `.env` file with runtime settings (ChatGPT API key, PanLex path, GraphQL parent path).
+     - Writes a `.env` file with runtime settings (ChatGPT API key, PanLex path, GraphQL parent path, ...).
      - Download and migrates the PanLex SQLite DB.
      - Runs `docker compose up -d` in `docker/`.
      - Waits until all containers are healthy.
@@ -75,6 +75,7 @@ You can
 * **`CERTBOT_EMAIL`** - Email address used by Certbot for TLS certificate registration.
 * **`SERVER_HOSTNAME`** - Domain name served by nginx and used by Certbot (e.g. `lexisoup.com`).
 * **`API_KEY_CHATGPT`** - OpenAI API key injected into the backend container.
+* **`API_KEY_DEEPL`** - DeepL API key injected into the backend container.
 
 ### Variables
 

@@ -71,9 +71,9 @@ pub async fn get_synonyms(
 
 #[cfg(test)]
 mod tests {
+    use crate::data::sources::panlex::sqlite::tests_common::new_test_pool;
     use crate::model::lexical_item_detail::Synonyms;
     use crate::model::{Sentence, TranslationsSet};
-    use crate::panlex::sqlite::tests_common::new_test_pool;
 
     #[tokio::test]
     async fn synonyms_happy_path_same_language() {

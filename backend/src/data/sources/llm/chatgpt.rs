@@ -1,5 +1,5 @@
 use super::chatgpt_structs::{ChatGPTRequest, ChatGPTResponse};
-use crate::util::truncate;
+use crate::utils::truncate;
 use axum::http::StatusCode;
 use reqwest::Client;
 use tracing::error;

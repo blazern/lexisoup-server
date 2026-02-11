@@ -52,6 +52,7 @@ jobs:
               --binary-path /tmp/backend/target/release/backend \
               --repo-url https://github.com/${{ github.repository }} \
               --api-key-chatgpt ${{ secrets.API_KEY_CHATGPT }} \
+              --api-key-deepl ${{ secrets.API_KEY_DEEPL }} \
               --graphql-parent-path /langample/ \
               --panlex-sqlite-db-url ${{vars.PANLEX_DB_URL}} \
               --panlex-sqlite-db-path ${{vars.PANLEX_SQLITE_DB_PATH}}

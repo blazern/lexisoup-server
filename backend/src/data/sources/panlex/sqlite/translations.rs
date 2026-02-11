@@ -73,8 +73,8 @@ pub async fn get_translations(
 
 #[cfg(test)]
 mod tests {
+    use crate::data::sources::panlex::sqlite::tests_common::new_test_pool;
     use crate::model::{Sentence, TranslationsSet, WordTranslations};
-    use crate::panlex::sqlite::tests_common::new_test_pool;
 
     #[tokio::test]
     async fn translations_happy_path() {

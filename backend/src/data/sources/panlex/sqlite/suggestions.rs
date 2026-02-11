@@ -114,7 +114,7 @@ fn center(v: &[i32]) -> Option<i32> {
 
 #[cfg(test)]
 mod tests {
-    use crate::panlex::sqlite::tests_common::new_test_pool;
+    use crate::data::sources::panlex::sqlite::tests_common::new_test_pool;
 
     #[tokio::test]
     async fn suggestions_include_expected_words() {
