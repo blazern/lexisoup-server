@@ -80,7 +80,10 @@ pub async fn request(
 
     let translations = parsed.translations.into_iter().map(|t| t.text).collect();
 
-    Ok(TranslationResult { translations })
+    Ok(TranslationResult {
+        translations,
+        source: "deepl".to_string(),
+    })
 }
 
 #[cfg(test)]
@@ -129,7 +132,8 @@ mod tests {
         assert_eq!(
             result,
             TranslationResult {
-                translations: vec!["Hallo, Welt!".to_string()]
+                translations: vec!["Hallo, Welt!".to_string()],
+                source: "deepl".to_string(),
             }
         );
     }

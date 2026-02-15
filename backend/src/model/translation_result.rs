@@ -4,4 +4,5 @@ use async_graphql::SimpleObject;
 #[graphql(rename_fields = "camelCase")]
 pub struct TranslationResult {
     pub translations: Vec<String>,
+    pub source: String,
 }
