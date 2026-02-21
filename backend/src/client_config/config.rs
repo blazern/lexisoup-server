@@ -17,7 +17,7 @@ impl Default for ClientConfig {
             backend_redirection_url: None,
             min_query_length: 3,
             max_query_length: 50,
-            translate_text_length_max: 50,
+            translate_text_length_max: 150,
             translate_text_length_min: 3,
             translate_batch_size_limit: 10,
         }
